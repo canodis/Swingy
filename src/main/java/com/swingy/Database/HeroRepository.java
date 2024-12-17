@@ -1,10 +1,13 @@
 package com.swingy.Database;
 
-import com.swingy.model.Hero;
-
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.swingy.model.Hero;
 
 public class HeroRepository {
 
@@ -31,7 +34,7 @@ public class HeroRepository {
         List<Hero> heroes = new ArrayList<>();
         String selectQuery = "SELECT * FROM heroes;";
         try (Statement stmt = DatabaseManager.getConnection().createStatement();
-             ResultSet rs = stmt.executeQuery(selectQuery)) {
+            ResultSet rs = stmt.executeQuery(selectQuery)) {
             while (rs.next()) {
                 Hero hero = new Hero(
                         rs.getString("name"),

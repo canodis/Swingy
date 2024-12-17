@@ -1,8 +1,8 @@
 package com.swingy.controller;
 
-import com.swingy.model.Hero;
-
 import java.util.Scanner;
+
+import com.swingy.model.Hero;
 
 public class GameController {
     private Hero hero;
@@ -19,7 +19,7 @@ public class GameController {
         System.out.println("3. Exit");
 
         int choice = scanner.nextInt();
-        scanner.nextLine(); // buffer temizle
+        scanner.nextLine();
 
         if (choice == 1) {
             System.out.println("Enter hero name:");
@@ -56,6 +56,5 @@ public class GameController {
 
     private void playGame() {
         System.out.println("Game started with hero: " + hero.getName());
-        // Oyun döngüsünü buraya ekleyeceğiz
     }
 }
