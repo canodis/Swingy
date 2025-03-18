@@ -13,7 +13,7 @@ public class AnimeHelmet extends AItem {
         this.Description = "Special helmet brought from another world, enemies will hesitate to hit you because you look so cute wearing it";
         this.Level = level;
         this.Type = ItemType.HELMET;
-        this.Rarity = ItemRarity.EPIC;
+        this.Rarity = ItemRarity.LEGENDARY;
         this.Boost = calculateBoost(baseBoost, getRarityMultiplier());
     }
 

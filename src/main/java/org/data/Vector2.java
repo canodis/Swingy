@@ -27,9 +27,8 @@ public class Vector2 implements Serializable {
         this.y = v.y;
     }
 
-    public void add(Vector2 v) {
-        this.x += v.x;
-        this.y += v.y;
+    public Vector2 add(Vector2 v) {
+        return new Vector2(this.x + v.x, this.y + v.y);
     }
 
     public void sub(Vector2 v) {
@@ -59,4 +58,9 @@ public class Vector2 implements Serializable {
     public int hashCode() {
         return Objects.hash(x, y);
     }
+
+    public static final Vector2 Up = new Vector2(0, -1);
+    public static final Vector2 Down = new Vector2(0, 1);
+    public static final Vector2 Left = new Vector2(-1, 0);
+    public static final Vector2 Right = new Vector2(1, 0);
 }

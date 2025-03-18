@@ -58,5 +58,9 @@ public class EnemyFactory {
         }
         return null;
     }
+
+    public void DeleteEnemy(AEnemy enemy) {
+        enemies.remove(enemy);
+    }
 }
 

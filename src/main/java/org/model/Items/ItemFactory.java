@@ -12,6 +12,20 @@ import java.util.Random;
 
 public class ItemFactory {
     private static final Random random = new Random();
+    private static ItemFactory instance = null;
+
+    private ItemFactory() {
+        if (instance == null) {
+            instance = this;
+        }
+    }
+
+    public static ItemFactory getInstance() {
+        if (instance == null) {
+            instance = new ItemFactory();
+        }
+        return instance;
+    }
 
     private static final List<AItem> ItemPrototypes = List.of(
             new LeatherArmor(), new IronArmor(), new GoldenArmor(), new DragonArmor(), new AnimeArmor(),
@@ -20,12 +34,12 @@ public class ItemFactory {
 
     );
 
-    public AItem generateItem(int enemyLevel, AEnemy enemy) {
+    public AItem generateItem(AEnemy enemy) {
         AItem.ItemRarity itemRarity = selectRarity(enemy);
 
         AItem.ItemType type = selectType();
 
-        int level = calculateItemLevel(enemyLevel);
+        int level = calculateItemLevel(enemy.GetLevel());
 
         return createItem(type, itemRarity, level, enemy);
     }

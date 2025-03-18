@@ -12,7 +12,7 @@ public class AnimeSword extends AItem {
         this.Description = "The sword of a swordsman named Zoro, who came to this world from a different world, is cursed and very powerful, be careful when using it!";
         this.Level = level;
         this.Type = ItemType.WEAPON;
-        this.Rarity = ItemRarity.RARE;
+        this.Rarity = ItemRarity.LEGENDARY;
         this.Boost = calculateBoost(baseBoost, getRarityMultiplier());
     }
 

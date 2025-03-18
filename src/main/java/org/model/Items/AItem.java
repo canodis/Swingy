@@ -58,4 +58,25 @@ public abstract class AItem implements Serializable {
     public void setName(String name) { Name = name; }
     public void setType(ItemType type) { Type = type; }
     public void setRarity(ItemRarity rarity) { Rarity = rarity; }
+
+    @Override
+    public String toString() {
+        String BoostInfo = "";
+        if (Type == ItemType.ARMOR) {
+            BoostInfo = "Defence: " + Boost;
+        }
+        else if (Type == ItemType.HELMET) {
+            BoostInfo = "Hp: " + Boost;
+        }
+        else if (Type == ItemType.WEAPON) {
+            BoostInfo = "Attack: " + Boost;
+        }
+
+        return "Name: " + Name + "\n" +
+                "Description: " + Description + "\n" +
+                BoostInfo + "\n" +
+                "Level: " + Level + "\n" +
+                "Type: " + Type + "\n" +
+                "Rarity: " + Rarity + "\n";
+    }
 }

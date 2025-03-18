@@ -12,7 +12,7 @@ public class GoldenSword extends AItem {
         this.Description = "Sword of pure gold forged by a master blacksmith";
         this.Level = level;
         this.Type = ItemType.WEAPON;
-        this.Rarity = ItemRarity.LEGENDARY;
+        this.Rarity = ItemRarity.RARE;
         this.Boost = calculateBoost(baseBoost, getRarityMultiplier());
     }
 

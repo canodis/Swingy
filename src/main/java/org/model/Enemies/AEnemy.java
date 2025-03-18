@@ -1,6 +1,7 @@
 package org.model.Enemies;
 
 import org.data.Vector2;
+import org.model.Characters.AHero;
 import org.model.GameObject;
 
 public abstract class AEnemy extends GameObject {
@@ -13,12 +14,13 @@ public abstract class AEnemy extends GameObject {
     }
 
     protected int Level;
-    protected int Attack;
-    protected int Defense;
-    protected int Hp;
+    protected String Name;
+    protected float Attack;
+    protected float Defense;
+    protected float Hp;
     protected Rarity rarity;
 
-    protected AEnemy(int level, int attack, int defense, int hp) {
+    protected AEnemy(int level, float attack, float defense, float hp) {
         this.Level = level;
         this.Attack = attack;
         this.Defense = defense;
@@ -41,16 +43,16 @@ public abstract class AEnemy extends GameObject {
 
     public float getRarityMultiplier() {
         return switch (rarity) {
-            case UNCOMMON -> 1.3f;
-            case RARE -> 1.7f;
-            case EPIC -> 2.2f;
+            case UNCOMMON -> 1.2f;
+            case RARE -> 1.6f;
+            case EPIC -> 2.0f;
             case LEGENDARY -> 3.0f;
             default -> 1.0f;
         };
     }
 
-    protected int scaleStat(int baseValue, int level) {
-        return (int) (baseValue * Math.pow(1.15, level - 1) * getRarityMultiplier());
+    protected float scaleStat(float baseValue, float level) {
+        return (float)(baseValue * Math.pow(1.15, level - 1) * getRarityMultiplier());
     }
 
     public abstract AEnemy Clone(int Level);
@@ -58,12 +60,41 @@ public abstract class AEnemy extends GameObject {
     public int GetLevel() { return Level; }
     public void SetLevel(int level) { Level = level; }
 
-    public int GetAttack() { return Attack; }
-    public void SetAttack(int attack) { Attack = attack; }
+    public float GetAttack() {
+        float attack = this.Attack;
+        attack += (float) ((Math.random() * 0.2 - 0.1) * attack);
+        return attack;
+    }
+    public void SetAttack(float attack) { Attack = attack; }
 
-    public int GetDefense() { return Defense; }
-    public void SetDefense(int defense) { Defense = defense; }
+    public float GetDefense() { return Defense; }
+    public void SetDefense(float defense) { Defense = defense; }
 
-    public int GetHp() { return Hp; }
-    public void SetHp(int hp) { Hp = hp; }
+    public float GetHp() { return Hp; }
+    public void SetHp(float hp) { Hp = hp; }
+    public void TakeDamage(float damage) {
+        damage -= this.Defense ;
+        if (damage <= 0) {
+            damage = (float) (Math.random() * 10);
+        }
+        this.Hp -= damage;
+    }
+
+    public String GetName() { return this.Name; }
+
+    @Override
+    public String toString() {
+        return "Name: " + this.Name + "\n" +
+                "Level: " + this.Level + "\n" +
+                "Attack: " + this.Attack + "\n" +
+                "Defense: " + this.Defense + "\n" +
+                "Hp: " + this.Hp + "\n" +
+                "Rarity: " + this.rarity + "\n";
+    }
+
+    public int calculateXP() {
+        double rarityMultiplier = getRarityMultiplier();
+        return (int) (100 * (1 + (Level * 0.2f)) * rarityMultiplier);
+    }
+
 }

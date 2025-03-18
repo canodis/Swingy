@@ -12,7 +12,7 @@ public class DragonSlayerSword extends AItem {
         this.Description = "Sword made from the teeth of a dragon killed by a heroic adventurer";
         this.Level = level;
         this.Type = ItemType.WEAPON;
-        this.Rarity = ItemRarity.LEGENDARY;
+        this.Rarity = ItemRarity.EPIC;
         this.Boost = calculateBoost(baseBoost, getRarityMultiplier());
     }
 

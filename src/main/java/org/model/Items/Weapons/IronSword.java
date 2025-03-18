@@ -11,7 +11,7 @@ public class IronSword extends AItem {
         this.Description = "A straight iron sword will do the job";
         this.Level = level;
         this.Type = ItemType.WEAPON;
-        this.Rarity = ItemRarity.COMMON;
+        this.Rarity = ItemRarity.UNCOMMON;
         this.Boost = calculateBoost(baseBoost, getRarityMultiplier());
     }
 

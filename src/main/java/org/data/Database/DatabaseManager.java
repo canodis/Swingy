@@ -83,7 +83,7 @@ public class DatabaseManager implements Serializable {
         if (item == null) {
             return;
         }
-        items.put(item.GetName(), item);
+        items.put(item.getName(), item);
         saveData();
     }
 

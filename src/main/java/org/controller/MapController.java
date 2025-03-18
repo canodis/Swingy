@@ -12,6 +12,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MapController {
+    Random rand = new Random();
     Map<Vector2, GameObject> map;
     int MapSize;
 
@@ -37,7 +38,6 @@ public class MapController {
             }
         }
         SpawnEnemies(hero.GetLevel());
-        displayMap();
     }
 
     public void displayMap() {
@@ -64,18 +64,20 @@ public class MapController {
             if (map.get(position) == null) {
                 AEnemy enemy = EnemyFactory.getInstance().SpawnEnemy(CalculateEnemyLevel(heroLevel));
                 map.put(position, enemy);
+                enemy.position.set(position);
                 spawnedEnemies++;
             }
         }
     }
 
     private int CalculateEnemyLevel(int heroLevel) {
-        return ThreadLocalRandom.current().nextInt(Math.max(1, heroLevel - 2),heroLevel + 1);
+        int randomLevel = heroLevel + rand.nextInt(3) - 1;
+        return Math.max(randomLevel, 1);
     }
 
     private void PrintGameObjectToTerminal(GameObject gameObject) {
         if (gameObject == null || !gameObject.isVisible) {
-            System.out.print(' ');
+            System.out.print(". ");
             return;
         }
 
@@ -88,5 +90,32 @@ public class MapController {
 //            System.out.print(hero.GetName());
 //            return;
 //        }
+    }
+
+    public AEnemy MoveHero(AHero hero, Vector2 direction) {
+        Vector2 newPosition = hero.position.add(direction);
+        if (newPosition.x < 0 || newPosition.x >= MapSize || newPosition.y < 0 || newPosition.y >= MapSize) {
+            System.out.println("Invalid movement");
+            return null;
+        }
+
+        GameObject gameObject = map.get(newPosition);
+        if (gameObject == null) {
+            map.put(hero.position, null);
+            hero.position.set(newPosition);
+            map.put(newPosition, hero);
+            return null;
+        }
+
+        if (gameObject instanceof AEnemy) {
+            return (AEnemy) gameObject;
+        }
+        return null;
+    }
+
+    public void SetHeroPosition(AHero hero, Vector2 position) {
+        map.put(hero.position, null);
+        hero.position.set(position);
+        map.put(position, hero);
     }
 }
