@@ -8,6 +8,8 @@ import org.model.Enemies.AEnemy;
 import org.model.Enemies.EnemyFactory;
 import org.model.Items.AItem;
 import org.model.Items.ItemFactory;
+import org.utils.Colors;
+import org.view.TerminalGameView;
 
 import javax.xml.transform.Result;
 import java.util.Locale;
@@ -18,11 +20,14 @@ public class GameController {
     private AHero hero;
     private final HeroController _heroController = new HeroController();
     private final MapController _mapController = new MapController();
-    private final TerminalController _terminalController = new TerminalController();
+    private final TerminalGameView _terminalGameView = new TerminalGameView();
+    private final TerminalController _terminalController;
     boolean isGameTerminalMode = true;
     Random random = new Random();
+
     public GameController() {
         DatabaseManager.getInstance();
+        _terminalController = new TerminalController(_terminalGameView);
         Initialize();
     }
 
@@ -76,21 +81,23 @@ public class GameController {
                 continue;
             }
             BattleResult result = null;
+            enemy.isVisible = true;
+            _mapController.displayMap();
             if (isGameTerminalMode) {
                 result = _terminalController.StartBattle(hero, enemy);
             }
 
             if (result == BattleResult.WIN) {
-                System.out.println("You won the battle");
+                Colors.PutColoredText("You won the battle", Colors.GREEN);
                 AItem Item = null;
                 if (random.nextInt(100) < 99) {
                     Item = ItemFactory.getInstance().generateItem(enemy);
                 }
                 int EarnedXp = enemy.calculateXP();
                 if (hero.AddXp(EarnedXp)) {
-                    System.out.println("You leveled up, your new level is: " + hero.GetLevel());
+                    Colors.PutColoredText("You leveled up, your new level is: " + hero.GetLevel(), Colors.YELLOW);
                 } else {
-                    System.out.println("You earned " + EarnedXp + " xp, required xp for next level: " + hero.getXPRequiredForNextLevel());
+                    Colors.PutColoredText("You earned " + EarnedXp + " xp, required xp for next level: " + hero.getXPRequiredForNextLevel(), Colors.YELLOW);
                 }
                 _mapController.SetHeroPosition(hero, enemy.position);
                 EnemyFactory.getInstance().DeleteEnemy(enemy);
@@ -114,20 +121,25 @@ public class GameController {
                         }
                     }
                     if (Item != null) {
-                        System.out.println("You found an item: " + Item.toString());
-                        int equip = InputController.getInstance().GetInput("Do you want to equip it? (1) Yes, (2) No", true);
-                        if (equip == 1) {
+                        if (Item.getRarity() == AItem.ItemRarity.LEGENDARY) {
+                            Colors.PutColoredText("\uD83D\uDD25 You found an LEGENDARY item: " + Item.toString() + " \uD83D\uDD25", Colors.GREEN);
+                        }
+                        else {
+                            Colors.PutColoredText("You found an item: " + Item.toString(), Colors.GREEN);
+                        }
+                        String equip = InputController.getInstance().GetInput("Do you want to equip it? (y) Yes, (n) No", false);
+                        if (equip.equalsIgnoreCase("y")) {
                             hero.EquipItem(Item);
                         }
                     }
                 }
 
             } else if (result == BattleResult.LOSE) {
-                System.out.println("You lost the battle, Game Over");
+                Colors.PutColoredText("You lost the battle, Game Over", Colors.RED);
 //                DatabaseManager.getInstance().deleteHero(hero);
                 break;
             } else if (result == BattleResult.RUN) {
-                System.out.println("You ran away");
+                Colors.PutColoredText("You ran away", Colors.PURPLE);
             }
             hero.RestoreHp();
         }
@@ -155,7 +167,7 @@ public class GameController {
                 System.exit(0);
                 break;
             default:
-                System.out.println("Invalid choice");
+                Colors.PutColoredText("Invalid choice", Colors.RED);
         }
     }
 }

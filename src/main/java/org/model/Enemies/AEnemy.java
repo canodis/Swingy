@@ -26,7 +26,7 @@ public abstract class AEnemy extends GameObject {
         this.Defense = defense;
         this.Hp = hp;
         this.Icon = "E";
-        this.isVisible = true;
+        this.isVisible = false;
         this.rarity = Rarity.COMMON;
     }
 

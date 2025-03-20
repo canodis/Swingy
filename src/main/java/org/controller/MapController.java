@@ -2,6 +2,7 @@ package org.controller;
 
 import org.data.Vector2;
 import org.model.Characters.AHero;
+import org.model.EmptySpace;
 import org.model.Enemies.AEnemy;
 import org.model.Enemies.EnemyFactory;
 import org.model.GameObject;
@@ -34,7 +35,9 @@ public class MapController {
                 if (map.containsKey(Position)) {
                     continue;
                 }
-                map.put(Position, null);
+                GameObject emptySpace = new EmptySpace();
+                emptySpace.position.set(Position);
+                map.put(Position, emptySpace);
             }
         }
         SpawnEnemies(hero.GetLevel());
@@ -51,7 +54,7 @@ public class MapController {
 
     private void SpawnEnemies(int heroLevel) {
         int totalCells = MapSize * MapSize;
-        int enemyCount = (int) (totalCells * 0.25);
+        int enemyCount = (int) (totalCells * 0.35);
         int spawnedEnemies = 0;
 
         Random random = new Random();
@@ -61,7 +64,7 @@ public class MapController {
             int y = random.nextInt(MapSize);
             Vector2 position = new Vector2(x, y);
 
-            if (map.get(position) == null) {
+            if (map.get(position) == null || map.get(position) instanceof EmptySpace) {
                 AEnemy enemy = EnemyFactory.getInstance().SpawnEnemy(CalculateEnemyLevel(heroLevel));
                 map.put(position, enemy);
                 enemy.position.set(position);
@@ -76,8 +79,12 @@ public class MapController {
     }
 
     private void PrintGameObjectToTerminal(GameObject gameObject) {
-        if (gameObject == null || !gameObject.isVisible) {
+        if (gameObject == null) {
             System.out.print(". ");
+            return;
+        }
+        else if (!gameObject.isVisible) {
+            System.out.print("# ");
             return;
         }
 
@@ -85,11 +92,6 @@ public class MapController {
         if (gameObject.Icon.length() == 1) {
             System.out.print(' ');
         }
-//        if (gameObject instanceof Warrior) {
-//            AHero hero = (Warrior) gameObject;
-//            System.out.print(hero.GetName());
-//            return;
-//        }
     }
 
     public AEnemy MoveHero(AHero hero, Vector2 direction) {
@@ -100,13 +102,16 @@ public class MapController {
         }
 
         GameObject gameObject = map.get(newPosition);
-        if (gameObject == null) {
+        if (gameObject != null && !(gameObject instanceof AEnemy)) {
+            VisibleRandomGameObjects(newPosition);
+        }
+
+        if (gameObject == null || gameObject instanceof EmptySpace) {
             map.put(hero.position, null);
             hero.position.set(newPosition);
             map.put(newPosition, hero);
             return null;
         }
-
         if (gameObject instanceof AEnemy) {
             return (AEnemy) gameObject;
         }
@@ -117,5 +122,21 @@ public class MapController {
         map.put(hero.position, null);
         hero.position.set(position);
         map.put(position, hero);
+    }
+
+    private void VisibleRandomGameObjects(Vector2 position) {
+        Vector2[] directions = new Vector2[] {Vector2.Up, Vector2.Down, Vector2.Left, Vector2.Right};
+        for (Vector2 direction : directions) {
+            Vector2 newPosition = position.add(direction);
+            if (newPosition.x < 0 || newPosition.x >= MapSize || newPosition.y < 0 || newPosition.y >= MapSize) {
+                continue;
+            }
+            GameObject gameObject = map.get(newPosition);
+            if (gameObject != null) {
+                if (ThreadLocalRandom.current().nextInt(0, 100) < 35) {
+                    gameObject.isVisible = true;
+                }
+            }
+        }
     }
 }

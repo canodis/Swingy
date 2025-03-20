@@ -129,15 +129,17 @@ public abstract class AHero extends GameObject implements Serializable {
         String armorName = armor != null ? armor.getName() + ", Def +" + armor.getBoost() : "None";
         String helmetName = helmet != null ? helmet.getName() + ", Hp +" + helmet.getBoost() : "None";
         return "Name='" + Name + '\'' + ", Class='" + Class + '\'' +  ", Level=" + Level +  ", Attack=" + Attack +
-                ", Defense=" + Defense +  ", Hp=" + Hp +  ", RunChange= %" + RunChange +
+                ", Defense=" + Defense +  ", Hp=" + Hp +  ", RunChange= %" + RunChange + ", Xp=" + Xp +
                 ", Weapon=" + weaponName + ", Armor=" + armorName + ", Helmet=" + helmetName;
     }
 
     // level up formula = level ∗ 1000 + ((level − 1) pow 2) ∗ 450.
     public boolean AddXp(int xp) {
         this.Xp += xp;
-        boolean levelUp = this.Level * 1000 + ((this.Level - 1) * (this.Level - 1)) * 450 <= this.Xp;
-        if (levelUp) {
+        int nextLevelXp = (this.Level * 1000 + ((this.Level - 1) * (this.Level - 1)) * 450);
+        if (nextLevelXp <= this.Xp) {
+            this.Xp -= nextLevelXp;
+            this.Level++;
             applyLevelUpStats();
             this.MaxHp += helmet != null ? helmet.getBoost() : 0;
             this.Hp = this.MaxHp;
@@ -147,6 +149,6 @@ public abstract class AHero extends GameObject implements Serializable {
     }
 
     public int getXPRequiredForNextLevel() {
-        return 1000 * this.Level + 450 * (this.Level - 1) * (this.Level - 1);
+        return (this.Level * 1000 + ((this.Level - 1) * (this.Level - 1)) * 450) - this.Xp;
     }
 }
